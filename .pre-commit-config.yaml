@@ -1,0 +1,22 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+        exclude_types:
+        - csv
+      - id: end-of-file-fixer
+        exclude_types:
+        - csv
+      - id: check-added-large-files
+        args: [ '--maxkb=600' ]
+      - id: check-case-conflict
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.8
+    hooks:
+      - id: ruff-format
+      - id: ruff
+        args: [ "--fix", "--fixable", "I" ] # autofix isort-based rules, thus replacing isort altogether
