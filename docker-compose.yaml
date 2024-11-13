@@ -1,0 +1,59 @@
+# (C) 2024 GoodData Corporation
+version: '3.7'
+
+services:
+  gooddata-cn-ce:
+    image: gooddata/gooddata-cn-ce:latest
+    ports:
+      - "3000:3000"
+      - "5432:5432"
+    volumes:
+      - gooddata-cn-ce-data:/data
+    environment:
+      APP_LOGLEVEL: "INFO"
+      GDCN_LICENSE_KEY: ${GDCN_LICENSE_KEY}
+      GDC_FEATURES_VALUES_ENABLE_FLIGHTRPC_DATA_SOURCE: "true"
+      GDC_FEATURES_VALUES_ENABLE_MODERN_EXECUTION_FLOW: "true"
+#
+# extra tuning for some of the services running inside the AIO.
+#
+#
+#      PULSAR_MEM: "-Xms256m -Xmx512m -XX:MaxDirectMemorySize=256m"
+#      BOOKIE_MEM: "-Xms256m -Xmx512m -XX:MaxDirectMemorySize=256m"
+#      METADATA_API_JAVA_OPTS: "-Xms256m -Xmx2048m"
+#      SQL_EXECUTOR_JAVA_OPTS: "-Xms256m -Xmx1024m"
+#      JAVA_OPTS: "-Xms256m -Xmx1024m"
+#      CALCIQUE_JAVA_OPTS: "-Xms256m -Xmx1024m"
+#      AFM_EXEC_API_JAVA_OPTS: "-Xms256m -Xmx1024m"
+
+  gooddata-flexconnect-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "17001:17001"
+    volumes:
+      - ./config:/tmp/config:Z
+    command:
+      - start
+      - --methods-provider
+      - gooddata_flexconnect
+      - --config
+      - /tmp/config/dev.server.toml
+      - /tmp/config/flexconnect.config.toml
+      - --dev-log
+    environment:
+      GOODDATA_FLIGHT_SERVER__LISTEN_HOST: "0.0.0.0"
+      GOODDATA_FLIGHT_SERVER__LISTEN_PORT: 17001
+      GOODDATA_FLIGHT_SERVER__ADVERTISE_HOST: "gooddata-flexconnect-server"
+      GOODDATA_FLIGHT_SERVER__ADVERTISE_PORT: 17001
+      GOODDATA_FLIGHT_SERVER__HEALTH_CHECK_HOST: "0.0.0.0"
+      GOODDATA_FLIGHT_SERVER__HEALTH_CHECK_PORT: 8877
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8877/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  gooddata-cn-ce-data:

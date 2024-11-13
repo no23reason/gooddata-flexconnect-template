@@ -1,0 +1,9 @@
+# (C) 2024 GoodData Corporation
+
+[flexconnect]
+
+# specify one or more modules that contain FlexConnection function implementations
+#
+functions = [
+    "flexconnect.sample_function"
+]

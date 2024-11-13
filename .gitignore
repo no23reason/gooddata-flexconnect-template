@@ -1,0 +1,14 @@
+.idea
+__pycache__
+*.pyc
+*.iml
+.mypy_cache
+.pytest_cache
+.ruff_cache
+.env
+.env.test
+.venv
+.DS_Store
+.vscode
+.secrets
+test_data

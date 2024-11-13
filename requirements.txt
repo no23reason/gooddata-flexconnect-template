@@ -1,0 +1,19 @@
+gooddata-flight-server==1.30.1.dev2
+gooddata-flexconnect==1.30.1.dev2
+
+pyarrow
+structlog
+
+# If you want to export OpenTelemetry traces to an OTLP backend,
+# uncomment these dependencies and tweak otel_* settings in the
+# config TOML files.
+#
+# opentelemetry-api
+# opentelemetry-exporter-otlp
+
+
+# If you want to add Prometheus metrics to your code, then
+# uncomment this dependency and configure the metrics_* settings
+# in the config TOML files.
+#
+# prometheus-client
