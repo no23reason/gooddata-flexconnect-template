@@ -66,7 +66,7 @@ instance and then add that location as data source to GoodData Cloud or Cloud Na
 To get started with custom functions is easy. The only prerequisite is a working installation of
 Python 3.12 and access to internet:
 
-1.  Clone this template: `git clone git@github.com:gooddata/gooddata-flexconnect-template.git <your-directory>`
+1.  Clone this template: `git clone https://github.com/gooddata/gooddata-flexconnect-template.git <your-directory>`
 2.  Navigate to your directory `cd <your-directory>`
 3.  Re-initialize git repository `rm -rf .git && git init && git add . && git commit -m "Initial commit"`
 
