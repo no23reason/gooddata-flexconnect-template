@@ -500,7 +500,7 @@ curl http://localhost:3000/api/v1/entities/dataSources \
     "attributes": {
       "url": "grpc://gooddata-flexconnect-server:17001",
       "name": "flexconnect-server",
-      "type": "FLIGHTRPC",
+      "type": "FLEXCONNECT",
       "token": "none",
       "schema": "",
       "cacheStrategy": "NEVER"
