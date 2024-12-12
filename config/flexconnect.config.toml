@@ -7,3 +7,14 @@
 functions = [
     "flexconnect.sample_function"
 ]
+
+# When FlexConnect invokes a function in response to GetFlightInfo call from the
+# clients, it will give the invocation a deadline to complete. If the deadline
+# is exceeded, the GetFlightInfo will fail with TIMEOUT and the function invocation
+# will be cancelled.
+#
+# You can use this setting to specify the deadline in milliseconds. The value must
+# be a positive number. It is not possible to disable the deadline.
+#
+# Default value is 180 000 millis (3minutes).
+# call_deadline_ms = 180000
