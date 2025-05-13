@@ -1,5 +1,5 @@
-gooddata-flight-server==1.32.3.dev2
-gooddata-flexconnect==1.32.3.dev2
+gooddata-flight-server==1.41.1.dev3
+gooddata-flexconnect==1.41.1.dev3
 
 pyarrow
 structlog

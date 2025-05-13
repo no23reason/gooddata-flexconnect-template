@@ -1,10 +1,17 @@
 # (C) 2024 GoodData Corporation
+import uuid
 from typing import Optional
 
 import gooddata_flight_server as gf
 import pyarrow
 import structlog
-from gooddata_flexconnect import ExecutionContext, ExecutionType, FlexConnectFunction
+from gooddata_flexconnect import (
+    DataSourceMessage,
+    ExecutionContext,
+    ExecutionType,
+    FlexConnectFunction,
+    add_data_source_messages_metadata,
+)
 
 _LOGGER = structlog.get_logger("sample_flexconnect_function")
 
@@ -56,7 +63,28 @@ class SampleFlexConnectFunction(FlexConnectFunction):
             "fact1": [123.456, 23.45, 8.76, 1.23, 34.56, 567.89],
             "fact2": [0.1, 0.2, 0.3, 0.15, 0.25, 0.35],
             "fact3": [111, 222, 333, 444, 555, 666],
-        }
+        },
+        # This is how you can pas additional data to GoodData.
+        # These will then be available in the execution result metadata.
+        # If you are not planning to use this feature, feel free to omit this altogether.
+        # See https://github.com/gooddata/gooddata-python-sdk/blob/master/gooddata-flexconnect/gooddata_flexconnect/function/data_source_messages.py
+        # for additional helper functions to add the DataSourceMessages in case you are using Arrow's RecordBatchReaders.
+        metadata=add_data_source_messages_metadata(
+            [
+                DataSourceMessage(
+                    # Unique identifier of the call, this allows you to discern different messages from the same source.
+                    correlation_id=str(uuid.uuid4()),
+                    # Name of the message source.
+                    source=Name,
+                    # Type of the message. There are currently no well-known types, but we may add some in the future.
+                    type="info",
+                    # You can include arbitrary data, however, there are two important limitations:
+                    # 1. The data MUST be serializable to JSON.
+                    # 2. The data SHOULD be small, there are quite strict limits on the size of the metadata.
+                    data={"extra": "data"},
+                )
+            ]
+        ),
     )
 
     def call(
