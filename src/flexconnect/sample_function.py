@@ -19,19 +19,18 @@ _LOGGER = structlog.get_logger("sample_flexconnect_function")
 class SampleFlexConnectFunction(FlexConnectFunction):
     """
     A sample FlexConnect function. This serves static data. It is not very useful but is
-    good starting point to explain FlexConnect functions:
+    a good starting point to explain FlexConnect functions:
 
     - Specify a nice name in `Name` field -> this will be visible in GoodData's
       semantic model
     - Specify `Schema` which describes the result -> this information will be used
       to populate data set columns in GoodData's Semantic Model
 
-    The `call` method does the heavy lifting. This is where you add your custom code
-    that is supposed to generate the result. Typically, the `call` method should inspect
-    the parameters and do the computation as necessary.
+    The `call` method does the heavy lifting. This is where you add your custom code to generate the result.
+    Typically, the `call` method should inspect the parameters and do the computation as necessary.
 
-    NOTE: when GoodData invokes your function, it may provide hint on which
-    columns it is interested in - it will be always a subset of all columns defined in
+    NOTE: when GoodData invokes your function, it may provide a hint on which
+    columns it is interested in - it will always be a subset of all columns defined in
     the `Schema`.
 
     Your code MAY take this into account and return only those desired columns. This is
@@ -78,7 +77,7 @@ class SampleFlexConnectFunction(FlexConnectFunction):
                     source=Name,
                     # Type of the message. There are currently no well-known types, but we may add some in the future.
                     type="info",
-                    # You can include arbitrary data, however, there are two important limitations:
+                    # You can include arbitrary data; however, there are two important limitations:
                     # 1. The data MUST be serializable to JSON.
                     # 2. The data SHOULD be small, there are quite strict limits on the size of the metadata.
                     data={"extra": "data"},
@@ -124,13 +123,32 @@ class SampleFlexConnectFunction(FlexConnectFunction):
         exactly once during startup.
 
         Most often, you want to perform function-specific initialization that may be
-        further driven by external configuration (e.g. env variables or TOML files).
+        further driven by external configuration (e.g., env variables or TOML files).
 
         The server uses Dynaconf to work with configuration. You can access
-        all available configuration via `ctx.settings`.
+        all available configuration values via `ctx.settings`.
 
         :param ctx: server context
         :return: nothing
         """
         # value = ctx.settings.get("your-setting")
         pass
+
+    def cancel(self) -> bool:
+        """
+        If you have some long-running operations as part of the `call` method,
+        you can implement this method so that it does all the necessary work to cancel them.
+
+        For example, if your `call` body performs some query to a database, you might want
+        to implement the query cancellation here.
+
+        Implementing the cancellation is optional.
+        If not implemented, the FlexConnect server will still pretend the entire call was
+        cancelled - it's just that it will wait for the `call` to finish and then throw the results away.
+
+        If you do not plan on implementing this method, you can delete it altogether:
+        it will fall back to the default implementation.
+
+        :return: True, if the cancellation was requested successfully, False otherwise.
+        """
+        return False
